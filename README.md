@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/banner.png" alt="Solar Angle Calculator Banner" width="100%" />
+  <img src="./public/banner.jpg" alt="Solar Angle Calculator Banner" width="100%" />
 </p>
 
 # Solar Angle Calculator
@@ -17,8 +17,6 @@ The interface balances research-grade computational fidelity with a modern, resp
 ---
 
 ## 📸 Project Screenshots
-
-> Place the images in `public/` with the filenames below (or update the paths).
 
 ### Application — Input Form
 
@@ -75,3 +73,35 @@ cd Solar_angle
 npm install
 npm run dev
 ```
+
+## 📜 How to Cite
+
+If you use this tool in academic work, research papers, or technical reports, please cite the repository as:
+
+```
+Surya Korn — Solar Angle Calculator. GitHub repository.
+(Your Name). https://github.com/your-username/Solar_angle
+```
+
+## 🤝 Contributing
+
+Contributions are warmly welcomed!
+
+You can help improve:
+
+- 🔧 Formula accuracy and scientific validation
+
+- 🎨 UI/UX and data visualization
+
+- 🧮 Batch processing and Excel/CSV export features
+- 🌍 Localization and timezone handling
+
+- 🧱 Code structure, optimization, or documentation
+
+### To contribute:
+
+- Fork the repository
+- Create a new branch
+- Commit your improvements
+- Open a Pull Request
+- Or simply open an Issue for discussion
