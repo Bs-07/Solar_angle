@@ -9,50 +9,87 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 // import { basic } from './basic.jsx';
 
 function App() {
-  const [date, setDate] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [elevation, setElevation] = useState('');
-  const [time, setTime] = useState('');
-  const [timezone, setTimezone] = useState('Asia/Kolkata');
-  const [longitudeDirection, setLongitudeDirection] = useState('E');
-  const [latitudeDirection, setLatitudeDirection] = useState('N');
-  const [elevationUnit, setElevationUnit] = useState('meters');
-  const [timeFormat, setTimeFormat] = useState('am');
-  const [customAzimuth, setCustomAzimuth] = useState('north');
+  //   const [date, setDate] = useState('');
+  //   const [longitude, setLongitude] = useState('');
+  //   const [latitude, setLatitude] = useState('');
+  //   const [elevation, setElevation] = useState('');
+  //   const [time, setTime] = useState('');
+  //   const [timezone, setTimezone] = useState('Asia/Kolkata');
+  //   const [longitudeDirection, setLongitudeDirection] = useState('E');
+  //   const [latitudeDirection, setLatitudeDirection] = useState('N');
+  //   const [elevationUnit, setElevationUnit] = useState('meters');
+  //   const [timeFormat, setTimeFormat] = useState('am');
+  //   const [customAzimuth, setCustomAzimuth] = useState('north');
+  const today = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [formValue, setFormValue] = useState(() => {
+    const saved = localStorage.getItem('solarForm-data');
+    return saved
+      ? JSON.parse(saved)
+      : {
+          longitude: '',
+          longitudeDirection: 'E',
+          latitude: '',
+          latitudeDirection: 'N',
+          date: today(),
+          elevation: '',
+          elevationUnit: 'meters',
+          time: '',
+          timeFormat: 'am',
+          timezone: 'Asia/Kolkata',
+          customAzimuth: 'north',
+        };
+  });
 
   const [result, setResult] = useState({ specific: null, range: [] });
   const [hasCalculated, setHasCalculated] = useState(false);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValue((prevValue) => ({
+      ...prevValue,
+      [name]: value,
+    }));
+  };
+  console.log(formValue);
+
+  //   const handleFormSubmit = (e) => {
+  //     e.preventDefault();
+  //   };
+
   const resultRef = useRef(null);
 
   useEffect(() => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-
-    setDate(
-      `${year}-${month < 10 ? '0' + month : month}-${
-        day < 10 ? '0' + day : day
-      }`
-    );
-  }, []);
+    localStorage.setItem('solarForm-data', JSON.stringify(formValue));
+  }, [formValue]);
 
   useEffect(() => {
-    if (
-      result.specific ||
-      (result.specific && result.range.length > 0 && hasCalculated)
-    ) {
+    if (result?.specific && result?.range?.length > 0) {
       resultRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [result]);
 
   const handleCalculation = (e) => {
     e.preventDefault();
+
+    const {
+      longitude,
+      longitudeDirection,
+      latitude,
+      latitudeDirection,
+      date,
+      elevation,
+      customAzimuth,
+      time,
+      timeFormat,
+      timezone,
+    } = formValue;
 
     const lon = parseFloat(longitude) * (longitudeDirection === 'W' ? -1 : 1);
     const lat = parseFloat(latitude) * (latitudeDirection === 'S' ? -1 : 1);
@@ -75,6 +112,8 @@ function App() {
         .padStart(2, '0')}`;
 
       datetimeString = `${date}T${timeString}`;
+    } else if (timeFormat === '24') {
+      datetimeString = `${date}T${time}`;
     }
 
     const calculateDate = moment.tz(datetimeString, timezone).toDate();
@@ -144,44 +183,31 @@ function App() {
 
   return (
     <>
-      <div class="container--header">
+      <div className="container--header">
         <h1 className="logo">Surya Korn</h1>
-        <p class="subtitle">Tool calculates solar angle data</p>
-        {/* Progress Steps  */}
-        {/* <div class="progress-steps">
-          <div class="step active">
-            <div class="step-number">1</div>
-            <div class="step-text">Input Parameters</div>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-text">Calculate</div>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-text">View Results</div>
-          </div>
-        </div> */}
+        <p className="subtitle">Tool calculates solar angle data</p>
 
         <form onSubmit={handleCalculation}>
-          <div class="form-row">
+          <div className="form-row">
             {/* Left Column  */}
-            <div class="form-column">
-              <div class="form-group">
-                <label for="longitude">Longitude</label>
-                <div class="input-group">
+            <div className="form-column">
+              <div className="form-group">
+                <label htmlFor="longitude">Longitude</label>
+                <div className="input-group">
                   <input
+                    name="longitude"
                     type="number"
                     id="longitude"
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)}
+                    value={formValue.longitude}
+                    onChange={handleChange}
                     step="0.000001"
                     placeholder="Enter longitude"
                   />
                   <select
+                    name="longitudeDirection"
                     id="longitude-direction"
-                    value={longitudeDirection}
-                    onChange={(e) => setLongitudeDirection(e.target.value)}
+                    value={formValue.longitudeDirection}
+                    onChange={handleChange}
                   >
                     <option value="E">East</option>
                     <option value="W">West</option>
@@ -189,21 +215,23 @@ function App() {
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="latitude">Latitude</label>
-                <div class="input-group">
+              <div className="form-group">
+                <label htmlFor="latitude">Latitude</label>
+                <div className="input-group">
                   <input
+                    name="latitude"
                     type="number"
                     id="latitude"
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)}
+                    value={formValue.latitude}
+                    onChange={handleChange}
                     step="0.000001"
                     placeholder="Enter latitude"
                   />
                   <select
+                    name="latitudeDirection"
                     id="latitude-direction"
-                    value={latitudeDirection}
-                    onChange={(e) => setLatitudeDirection(e.target.value)}
+                    value={formValue.latitudeDirection}
+                    onChange={handleChange}
                   >
                     <option value="N">North</option>
                     <option value="S">South</option>
@@ -211,30 +239,33 @@ function App() {
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="date">Date</label>
+              <div className="form-group">
+                <label htmlFor="date">Date</label>
                 <input
+                  name="date"
                   type="date"
                   id="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  value={formValue.date}
+                  onChange={handleChange}
                 />
               </div>
 
-              <div class="form-group">
-                <label for="elevation">Elevation</label>
-                <div class="input-group">
+              <div className="form-group">
+                <label htmlFor="elevation">Elevation</label>
+                <div className="input-group">
                   <input
+                    name="elevation"
                     type="number"
                     id="elevation"
-                    value={elevation}
-                    onChange={(e) => setElevation(e.target.value)}
+                    value={formValue.elevation}
+                    onChange={handleChange}
                     placeholder="Enter elevation"
                   />
                   <select
+                    name="elevationUnit"
                     id="elevation-unit"
-                    value={elevationUnit}
-                    onChange={(e) => setElevationUnit(e.target.value)}
+                    value={formValue.elevationUnit}
+                    onChange={handleChange}
                   >
                     <option value="meters">Meters</option>
                     <option value="feet">Feet</option>
@@ -244,21 +275,23 @@ function App() {
             </div>
 
             {/* Right Column  */}
-            <div class="form-column">
-              <div class="form-group">
-                <label for="time">Time</label>
+            <div className="form-column">
+              <div className="form-group">
+                <label htmlFor="time">Time</label>
                 <div className="input-group">
                   <input
-                    type="text"
+                    name="time"
+                    type="time"
                     id="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    value={formValue.time}
+                    onChange={handleChange}
                     placeholder="hrs:min"
                   />
                   <select
+                    name="timeFormat"
                     id="time-format"
-                    value={timeFormat}
-                    onChange={(e) => setTimeFormat(e.target.value)}
+                    value={formValue.timeFormat}
+                    onChange={handleChange}
                   >
                     <option value="am">AM</option>
                     <option value="pm">PM</option>
@@ -267,26 +300,28 @@ function App() {
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="timezone">Time Zone</label>
+              <div className="form-group">
+                <label htmlFor="timezone">Time Zone</label>
                 <select
+                  name="timezone"
                   id="timezone"
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
+                  value={formValue.timezone}
+                  onChange={handleChange}
                 >
-                  {timezones.map((timezone) => (
-                    <option value={timezone}>{timezone}</option>
+                  {timezones.map((timezone, index) => (
+                    <option key={index} value={timezone}>
+                      {timezone}
+                    </option>
                   ))}
                 </select>
               </div>
-              <div class="form-group">
-                <label for="date">Zero Azimuth</label>
+              <div className="form-group">
+                <label htmlFor="date">Zero Azimuth</label>
                 <select
+                  name="customAzimuth"
                   id="zero-azimuth"
-                  value={customAzimuth}
-                  onChange={(e) => {
-                    setCustomAzimuth(e.target.value);
-                  }}
+                  value={formValue.customAzimuth}
+                  onChange={handleChange}
                 >
                   <option value="north">North</option>
                   <option value="east">East </option>
@@ -297,8 +332,8 @@ function App() {
             </div>
           </div>
 
-          <div class="button-container">
-            <button class="shiny-cta" type="submit">
+          <div className="button-container">
+            <button className="shiny-cta" type="submit">
               Calculate
             </button>
           </div>

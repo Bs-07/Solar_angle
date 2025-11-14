@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { HotTable } from '@handsontable/react';
 import 'handsontable/dist/handsontable.full.css';
