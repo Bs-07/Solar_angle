@@ -61,14 +61,12 @@ The implementation follows standard solar geometry steps:
 6. Apply **zero-azimuth offset** (North=0°, East=+90°, South=+180°, West=+270°) and normalize to [0,360).
 7. Derive sunrise/sunset from when altitude crosses zero and compute daylight duration.
 
-The `src/utils/solarMath.js` file contains the exact formulas and a short test suite comparing outputs against known reference values.
-
 ---
 
 ## ▶️ Installation (development)
 
 ```bash
-git clone https://github.com/your-username/Solar_angle.git
+git clone https://github.com/Bs-07/Solar_angle.git
 cd Solar_angle
 npm install
 npm run dev
@@ -80,7 +78,7 @@ If you use this tool in academic work, research papers, or technical reports, pl
 
 ```
 Surya Korn — Solar Angle Calculator. GitHub repository.
-(Your Name). https://github.com/your-username/Solar_angle
+Bhoopendra Singh. https://github.com/Bs-07/Solar_angle
 ```
 
 ## 🤝 Contributing
