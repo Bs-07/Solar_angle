@@ -27,6 +27,7 @@ function App() {
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+  console.log(today());
 
   const [formValue, setFormValue] = useState(() => {
     const saved = localStorage.getItem('solarForm-data');
